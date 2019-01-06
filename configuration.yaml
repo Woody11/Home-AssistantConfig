@@ -1,0 +1,234 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret latitude
+  longitude: !secret longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 20
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: !secret time_zone
+  # Customization file
+  customize: !include customize.yaml
+
+# Show links to resources in log and frontend
+introduction:
+
+# Enables the frontend
+frontend: !include frontend.yaml
+
+# Enables configuration UI
+config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Text to speech
+tts:
+  - platform: google
+
+# Cloud
+cloud:
+
+lovelace:
+  mode: yaml
+
+lametric:
+  client_id: !secret lametric_client_id
+  client_secret: !secret lametric_client_secret
+
+ring:
+  username: !secret ring_username
+  password: !secret ring_password
+
+binary_sensor:
+  - platform: ping
+    host: 192.168.0.1
+    name: Modem
+
+  - platform: ping
+    host: 192.168.86.18
+    name: Desktop PC
+
+  - platform: ping
+    host: 192.168.86.28
+    name: Quickbox
+
+  - platform: ping
+    host: 192.168.86.110
+    name: NAS
+
+climate:
+  - platform: sensibo
+    api_key: !secret sensibo_api
+
+camera:
+  - platform: generic
+    name: Weather Radar
+    still_image_url: https://radblast.wunderground.com/cgi-bin/radar/WUNIDS_map?station=064&brand=wui&num=6&delay=15&type=A0Q&frame=0&scale=0.5&noclutter=1&showstorms=0&mapx=400&mapy=240&centerx=400&centery=240&transx=0&transy=0&showlabels=1&severe=0&rainsnow=1&lightning=1&smooth=1&rand=25152719&lat=0&lon=0&label=you
+
+  - platform: ring
+
+notify:
+  - name: Lametric1
+    platform: lametric
+    lifetime: 20
+    icon: a5453
+    cycles: 2
+    priority: info
+
+  - name: Pushover
+    platform: pushover
+    api_key: !secret pushover_api
+    user_key: !secret pushover_user
+
+sensor:
+  - platform: ring
+    monitored_conditions:
+      - battery
+      - last_activity
+      - last_ding
+      - last_motion
+      - volume
+
+  - platform: nzbget
+    host: 192.168.86.28
+    port: 6789
+    username: !secret nzbget_user
+    password: !secret nzbget_password
+    monitored_variables:
+      - average_download_rate
+      - download_rate
+      - download_size
+      - remaining_size
+      - uptime
+
+  - platform: radarr
+    api_key: !secret radarr_api
+    host: 192.168.86.28
+    urlbase: /radarr
+    monitored_conditions:
+      - movies
+      - upcoming
+      - status
+    days: 14
+
+  - platform: sonarr
+    api_key: !secret sonarr_api
+    host: 192.168.86.28
+    urlbase: /sonarr
+    monitored_conditions:
+      - series
+      - upcoming
+      - wanted
+      - queue
+    days: 1
+
+  - platform: pocketcasts
+    username: !secret pocketcasts_user
+    password: !secret pocketcasts_pass
+
+  - platform: google_wifi
+    monitored_conditions:
+      - current_version
+      - uptime
+      - last_restart
+      - local_ip
+      - status
+
+  - platform: speedtest
+    server_id: 18713
+    minute: 30
+    hour:
+      - 0
+      - 2
+      - 4
+      - 6
+      - 8
+      - 10
+      - 12
+      - 14
+      - 16
+      - 18
+      - 20
+      - 22
+    monitored_conditions:
+      - ping
+      - download
+      - upload
+
+  - platform: xbox_live
+    api_key: !secret xbox_api
+    xuid:
+      - !secret xbox_uid
+  - platform: yr
+
+  - platform: transport_nsw
+    name: 'Train'
+    stop_id: 2114181
+    destination: 'Kings Cross Station'
+    api_key: !secret transport_api
+
+
+weather:
+  - platform: darksky
+    api_key: !secret darksky_api
+    mode: daily
+
+neato:
+  username: !secret neato_username
+  password: !secret neato_pass
+
+device_tracker:
+
+  - platform: life360
+    username: !secret life360_user
+    password: !secret life360_pass
+    add_zones: true
+    zone_interval:
+      minutes: 15
+
+  - platform: tile
+    username: !secret tile_user
+    password: !secret tile_pass
+
+cover:
+  - platform: myq
+    username: !secret myq_user
+    password: !secret myq_pass
+    type: chamberlain
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+switch: !include switches.yaml

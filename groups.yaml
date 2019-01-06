@@ -1,0 +1,13 @@
+study:
+  name: study
+  icon: mdi:desktop-tower-monitor
+  entities:
+    - light.study
+    - light.study_2
+
+living_room:
+  name: Living Room
+  icon: mdi:sofa
+  entities:
+    - light.living_room_1
+    - light.living_room_2

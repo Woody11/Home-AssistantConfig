@@ -1,0 +1,17 @@
+####################################################
+#                                                  #
+#             WAKE ON LAN SWITCHES                 #
+#                                                  #
+####################################################
+
+#https://home-assistant.io/components/switch.wake_on_lan/
+
+  - platform: wake_on_lan
+    name: Desktop Switch
+    mac_address: "4c:ed:fb:67:b9:54"
+    host: 192.168.86.18
+    turn_off:
+      service: hassio.addon_stdin
+      data:
+        addon: core_rpc_shutdown
+        input: desktop
